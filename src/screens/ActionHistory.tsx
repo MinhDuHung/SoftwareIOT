@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Menu from '../components/Menu';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -6,27 +6,37 @@ import axios from 'axios';
 import { getAllActionsApi, handleSortingAscApi, handleSortingChosenOneApi } from '../utils/API/actionApi';
 import ModalComp from '../components/ModalComp';
 import _ from 'lodash';
+import { useDispatch, useSelector } from 'react-redux'
+import { CHANGE_FILTER_STATE } from '../utils/actions';
 const { width, height } = Dimensions.get("window")
 
 const ActionHistory = ({ navigation }: any) => {
   const [data, setData] = useState<any>([]);
   const [text, setText] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [visible, setVisible] = useState(false)
   const [page, setpage] = useState(0)
   const [viewOptions, setViewOptions] = useState('All')
   const number = useRef(1)
+  const filterSaga = useSelector((state: any) => state.filterReducer)
+
 
   const getActionData = async () => {
     try {
-      const result = await axios.get(getAllActionsApi, {
-        params: {
-          number: number.current
+      if (!filterSaga.filter.length) {
+        const result = await axios.get(getAllActionsApi, {
+          params: {
+            number: number.current,
+          }
+        })
+        if (result.status == 200) {
+          setData((result.data))
         }
-      })
-      if (result.status == 200) {
-        setData((result.data))
+      } else if (filterSaga.filter[0].sortType) {
+        await handleSorting(filterSaga.filter[0].type, filterSaga.filter[0].sortType)
+      } else if (filterSaga.filter[0].action) {
+        await handleSortingChosenOne(filterSaga.filter[0].type, filterSaga.filter[0].action)
       }
+
     } catch (error) {
       console.error('error get action data ', error)
     }
@@ -55,7 +65,6 @@ const ActionHistory = ({ navigation }: any) => {
   }
 
   const handleSortingChosenOne = async (type: string, action: string) => {
-    number.current = 1
     try {
       const respone = await axios.get(handleSortingChosenOneApi, {
         params: {
@@ -66,7 +75,7 @@ const ActionHistory = ({ navigation }: any) => {
       })
       if (respone.status == 200) {
         setData(respone.data)
-        setpage(0)
+        // setpage(0)
       }
     } catch (error) {
       console.log(error)
@@ -74,7 +83,6 @@ const ActionHistory = ({ navigation }: any) => {
   }
 
   const handleSorting = async (type: string, sortType: string) => {
-    number.current = 1
     try {
       const respone = await axios.get(handleSortingAscApi, {
         params: {
@@ -85,13 +93,16 @@ const ActionHistory = ({ navigation }: any) => {
       })
       if (respone.status == 200) {
         setData(respone.data)
-        setpage(0)
+        if (!filterSaga.filter.length) {
+          setpage(0)
+        }
       }
     } catch (error) {
       console.log(error)
     }
 
   };
+
 
   const handlePaging = async (action: string) => {
     if (action === 'plus' && (page + 1) % 5 == 0 && data[4].length == 12) {
@@ -162,6 +173,9 @@ const ActionHistory = ({ navigation }: any) => {
               )
             }}
           />
+          {
+            filterSaga.isLoading && <ActivityIndicator size={30} color={'red'} />
+          }
         </View>
       </View>
 
@@ -183,7 +197,7 @@ const ActionHistory = ({ navigation }: any) => {
 
       <Menu navigation={navigation} screen={'ActionHistory'} />
       {
-        visible && <ModalComp handleSorting={handleSorting} setVisible={setVisible} setViewOptions={setViewOptions} handleSortingChosenOne={handleSortingChosenOne} />
+        visible && <ModalComp handleSorting={handleSorting} setVisible={setVisible} setViewOptions={setViewOptions} handleSortingChosenOne={handleSortingChosenOne} number={number} setpage={setpage} />
       }
     </View >
   )

@@ -5,7 +5,7 @@ import Animated, { Extrapolation, Easing, interpolate, runOnJS, useAnimatedStyle
 import axios from 'axios'
 import { insertActionApi } from '../utils/API/actionApi'
 import { err } from 'react-native-svg'
-import convertToVietnamTime from '../utils/convertDateFormat'
+import convertToVietnamTime from '../utils/functions/convertDateFormat'
 
 const { width, height } = Dimensions.get('window')
 const ModeController = ({ title }: any) => {

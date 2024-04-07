@@ -3,7 +3,6 @@ import React, { memo, useEffect, useRef, useState } from 'react'
 import Sensor from '../components/Sensor'
 import WebView from 'react-native-webview'
 import { useDispatch } from 'react-redux'
-import { CHANGE_IS_WARNING } from '../utils/actions'
 const { width, height } = Dimensions.get("window")
 const WebViewChart = ({ navigation }: any) => {
   const dispatch = useDispatch()
@@ -31,7 +30,7 @@ const WebViewChart = ({ navigation }: any) => {
     setHumidity(humidityData[humidityData.length - 1]);
     setTemperature(temperatureData[temperatureData.length - 1]);
     setBrightness(brightnessData[brightnessData.length - 1]);
-    dispatch({ type: CHANGE_IS_WARNING, isWarning: temperatureData[temperatureData.length - 1] > 60 ? true : false })
+    // dispatch({ type: CHANGE_IS_WARNING, isWarning: temperatureData[temperatureData.length - 1] > 60 ? true : false })
   }, [temperatureData, brightnessData, humidityData]);
 
   const chartData = {

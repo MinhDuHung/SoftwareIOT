@@ -13,6 +13,7 @@
     "@react-native-community/blur": "^4.4.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@shopify/flash-list": "^1.6.4",
     "axios": "^1.6.5",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.44",

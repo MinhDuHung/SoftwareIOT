@@ -1,9 +1,9 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { CHANGE_FILTER_STATE } from '../utils/actions'
+import { CHANGE_FILTER_STATE } from '../redux/actionType/actions'
 const { width, height } = Dimensions.get("window")
-const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingChosenOne, number, setpage }: any) => {
+const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingChosenOne, number }: any) => {
     const dispatch = useDispatch()
     return (
         <View style={styles.modal}>
@@ -16,7 +16,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             handleSorting('id', 'DESC')
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'id', sortType: 'DESC' } })
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>Desc</Text>
@@ -27,7 +27,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             handleSorting('id', "ASC")
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'id', sortType: 'ASC' } })
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Asc</Text>
@@ -44,7 +44,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             handleSortingChosenOne('device', '1')
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: '1' } })
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>Fan</Text>
@@ -55,7 +55,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             handleSortingChosenOne('device', '0')
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: '0' } })
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Light</Text>
@@ -72,7 +72,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: '1' } })
                             handleSortingChosenOne('mode', '1')
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>On</Text>
@@ -83,7 +83,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: '0' } })
                             handleSortingChosenOne('mode', '0')
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Off</Text>
@@ -100,7 +100,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'DESC' } })
                             handleSorting('datetime', "DESC")
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>Desc</Text>
@@ -111,7 +111,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'ASC' } })
                             handleSorting('datetime', 'ASC')
                             setVisible(false)
-                            setpage(0)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Asc</Text>
@@ -126,6 +126,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("All")
+                            handleSorting('id', 'DESC')
+                            number.current = 1
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>All</Text>
@@ -134,6 +137,8 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("Device")
+                            handleSorting('id', 'DESC')
+                            number.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Device only</Text>
@@ -142,6 +147,8 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("Mode")
+                            handleSorting('id', 'DESC')
+                            number.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Mode only</Text>
@@ -150,6 +157,8 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("Date")
+                            handleSorting('id', 'DESC')
+                            number.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Date only</Text>

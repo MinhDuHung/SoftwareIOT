@@ -6,14 +6,14 @@ import Profile from './src/screens/Profile';
 import SensorHistory from './src/screens/SensorHistory';
 import ActionHistory from './src/screens/ActionHistory';
 import { Provider } from 'react-redux';
-// import store from './src/redux/store';
+import { store } from './src/redux/store';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      {/* <Provider store={store}> */}
+      <Provider store={store}>
         <Stack.Navigator
           screenOptions={{
             headerShown: false
@@ -24,7 +24,7 @@ export default function App() {
           <Stack.Screen name="SensorHistory" component={SensorHistory} />
           <Stack.Screen name="ActionHistory" component={ActionHistory} />
         </Stack.Navigator>
-      {/* </Provider> */}
+      </Provider>
     </NavigationContainer>
   );
 }

@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { CHANGE_FILTER_STATE, CHANGE_SENSOR_FILTER_STATE } from '../redux/actionType/actions'
 const { width, height } = Dimensions.get("window")
-const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any) => {
+const SensorModal = ({ handleSorting, setVisible, setViewOptions, numberOfQueries }: any) => {
     const dispatch = useDispatch()
     return (
         <View style={styles.modal}>
@@ -12,7 +12,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('id', 'DESC')
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'id', sortType: 'DESC' } })
                             setVisible(false)
@@ -22,7 +22,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('id', "ASC")
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'id', sortType: 'ASC' } })
                             setVisible(false)
@@ -39,7 +39,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('temperature', 'DESC')
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'temperature', sortType: 'DESC' } })
                             setVisible(false)
@@ -49,7 +49,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('temperature', "ASC")
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'temperature', sortType: 'ASC' } })
                             setVisible(false)
@@ -66,7 +66,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('brightness', 'DESC')
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'brightness', sortType: 'DESC' } })
                             setVisible(false)
@@ -76,7 +76,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('brightness', "ASC")
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'brightness', sortType: 'ASC' } })
                             setVisible(false)
@@ -93,7 +93,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('humidity', 'DESC')
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'humidity', sortType: 'DESC' } })
                             setVisible(false)
@@ -103,7 +103,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('humidity', "ASC")
                             dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'humidity', sortType: 'ASC' } })
                             setVisible(false)
@@ -120,7 +120,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'DESC' } })
                             handleSorting('datetime', "DESC")
                             setVisible(false)
@@ -131,7 +131,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'ASC' } })
                             handleSorting('datetime', 'ASC')
                             setVisible(false)
@@ -151,7 +151,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                             setVisible(false)
                             setViewOptions("All")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
 
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
@@ -162,7 +162,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                             setVisible(false)
                             setViewOptions("Temperature")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Temp only</Text>
@@ -172,7 +172,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                             setVisible(false)
                             setViewOptions("Brightness")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Brig only</Text>
@@ -182,7 +182,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                             setVisible(false)
                             setViewOptions("Humidity")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Humi only</Text>
@@ -192,7 +192,7 @@ const SensorModal = ({ handleSorting, setVisible, setViewOptions, number }: any)
                             setVisible(false)
                             setViewOptions("Date")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Date only</Text>

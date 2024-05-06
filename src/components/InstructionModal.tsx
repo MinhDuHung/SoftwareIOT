@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },
     container: {
         height: 400, width: 300, backgroundColor: '#FECB3E', position: "absolute", zIndex: 1,
-        top: 140, left: 10, justifyContent: "space-evenly", alignItems: "center", paddingHorizontal: 10,
+        top: 60, left: 60, justifyContent: "space-evenly", alignItems: "center", paddingHorizontal: 10,
         elevation: 5
 
     }

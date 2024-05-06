@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { CHANGE_FILTER_STATE } from '../redux/actionType/actions'
 const { width, height } = Dimensions.get("window")
-const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingChosenOne, number }: any) => {
+const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingChosenOne, numberOfQueries }: any) => {
     const dispatch = useDispatch()
     return (
         <View style={styles.modal}>
@@ -12,7 +12,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('id', 'DESC')
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'id', sortType: 'DESC' } })
                             setVisible(false)
@@ -23,7 +23,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             handleSorting('id', "ASC")
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'id', sortType: 'ASC' } })
                             setVisible(false)
@@ -40,9 +40,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
-                            handleSortingChosenOne('device', '1')
-                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: '1' } })
+                            numberOfQueries.current = 1
+                            handleSortingChosenOne('device', 'fan')
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: 'fan' } })
                             setVisible(false)
 
                         }}
@@ -51,9 +51,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
-                            handleSortingChosenOne('device', '0')
-                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: '0' } })
+                            numberOfQueries.current = 1
+                            handleSortingChosenOne('device', 'light')
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'device', action: 'light' } })
                             setVisible(false)
 
                         }}
@@ -68,9 +68,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
-                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: '1' } })
-                            handleSortingChosenOne('mode', '1')
+                            numberOfQueries.current = 1
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: 'On' } })
+                            handleSortingChosenOne('mode', 'On')
                             setVisible(false)
 
                         }}
@@ -79,9 +79,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
-                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: '0' } })
-                            handleSortingChosenOne('mode', '0')
+                            numberOfQueries.current = 1
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'mode', action: 'Off' } })
+                            handleSortingChosenOne('mode', 'Off')
                             setVisible(false)
 
                         }}
@@ -96,7 +96,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'DESC' } })
                             handleSorting('datetime', "DESC")
                             setVisible(false)
@@ -107,7 +107,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            number.current = 1
+                            numberOfQueries.current = 1
                             dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'ASC' } })
                             handleSorting('datetime', 'ASC')
                             setVisible(false)
@@ -127,7 +127,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             setVisible(false)
                             setViewOptions("All")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
 
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
@@ -138,7 +138,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             setVisible(false)
                             setViewOptions("Device")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Device only</Text>
@@ -148,7 +148,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             setVisible(false)
                             setViewOptions("Mode")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Mode only</Text>
@@ -158,7 +158,7 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                             setVisible(false)
                             setViewOptions("Date")
                             handleSorting('id', 'DESC')
-                            number.current = 1
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Date only</Text>

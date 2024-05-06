@@ -16,8 +16,8 @@ const ModeController = ({ title }: any) => {
         const datetime = convertToVietnamTime(new Date())
         try {
             const result = await axios.post(insertActionApi, {
-                device: 0,
-                mode: 1,
+                device: "light",
+                mode: "On",
                 datetime
             })
             if (result.status == 201) {
@@ -32,8 +32,8 @@ const ModeController = ({ title }: any) => {
         const datetime = convertToVietnamTime(new Date())
         try {
             const result = await axios.post(insertActionApi, {
-                device: 0,
-                mode: 0,
+                device: "light",
+                mode: "Off",
                 datetime
             })
             if (result.status == 201) {
@@ -48,8 +48,8 @@ const ModeController = ({ title }: any) => {
         const datetime = convertToVietnamTime(new Date())
         try {
             const result = await axios.post(insertActionApi, {
-                device: 1,
-                mode: 1,
+                device: "fan",
+                mode: "On",
                 datetime
             })
             if (result.status == 201) {
@@ -64,8 +64,8 @@ const ModeController = ({ title }: any) => {
         const datetime = convertToVietnamTime(new Date())
         try {
             const result = await axios.post(insertActionApi, {
-                device: 1,
-                mode: 0,
+                device: "fan",
+                mode: "Off",
                 datetime
             })
             if (result.status == 201) {

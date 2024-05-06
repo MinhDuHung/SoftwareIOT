@@ -11,7 +11,7 @@ const initialState = {
 }
 
 const sensorFilterReducer = (state = initialState, payload: any) => {
-    console.log(payload)
+    // console.log(payload)
     switch (payload.type) {
         case CHANGE_SENSOR_FILTER_STATE:
             return { ...state, isLoading: true, isFailed: false }

@@ -3,32 +3,40 @@ import React, { useEffect, useRef, useState } from 'react'
 import Menu from '../components/Menu';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios';
-import { getAllActionsApi, handleSortingAscDescApi, handleSortingChosenOneApi } from '../utils/API/actionApi';
+import { getAllActionsApi, handleSearchByCharactersApi, handleSortingAscDescApi, handleSortingChosenOneApi } from '../utils/API/actionApi';
 import ModalComp from '../components/ActionModal';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux'
 import ActionHistoryBody from '../components/ActionHistoryBody';
 import { FlashList } from '@shopify/flash-list';
 import InstructionModal from '../components/InstructionModal';
+import { CHANGE_FILTER_STATE } from '../redux/actionType/actions';
+import Popup from '../components/Popup';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const { width, height } = Dimensions.get("window")
 
 const ActionHistory = ({ navigation }: any) => {
 
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<any>([])
   const [visible, setVisible] = useState(false)
+  const [selection, setSelection] = useState<string>('None')
+  const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
+  const [text, setText] = useState('')
   const [page, setpage] = useState(0)
   const [openInstruction, setOpenInstruction] = useState(false)
   const [viewOptions, setViewOptions] = useState('All')
-  const number = useRef(1)
+  const numberOfQueries = useRef(1)
   const filterReducer = useSelector((state: any) => state.filterReducer)
   const ref = useRef<FlashList<any>>(null)
+  const dispatch = useDispatch()
+  const selectionData = ['None', 'Device', 'Id', 'Mode', 'Datetime']
 
   const getActionData = async () => {
     try {
       if (!filterReducer.filter.type) {
         const result = await axios.get(getAllActionsApi, {
           params: {
-            number: number.current,
+            numberOfQueries: numberOfQueries.current,
           }
         })
 
@@ -39,8 +47,9 @@ const ActionHistory = ({ navigation }: any) => {
         await _handleSorting(filterReducer.filter.type, filterReducer.filter.sortType)
       } else if (filterReducer.filter.action) {
         await _handleSortingChosenOne(filterReducer.filter.type, filterReducer.filter.action)
+      } else {
+        await _handleSearchByCharacters()
       }
-
     } catch (error) {
       console.error('error get action data ', error)
     }
@@ -59,13 +68,13 @@ const ActionHistory = ({ navigation }: any) => {
       const respone = await axios.get(handleSortingChosenOneApi, {
         params: {
           type,
-          number: number.current,
+          numberOfQueries: numberOfQueries.current,
           action
         }
       })
       if (respone.status == 200) {
         setData(respone.data)
-        number.current = 1
+        numberOfQueries.current = 1
         ref.current?.scrollToIndex({ animated: false, index: 0 })
         setpage(0)
       }
@@ -73,12 +82,13 @@ const ActionHistory = ({ navigation }: any) => {
       console.log(error)
     }
   }
+
   const _handleSortingChosenOne = async (type: string, action: string) => {
     try {
       const respone = await axios.get(handleSortingChosenOneApi, {
         params: {
           type,
-          number: number.current,
+          numberOfQueries: numberOfQueries.current,
           action
         }
       })
@@ -98,14 +108,14 @@ const ActionHistory = ({ navigation }: any) => {
         params: {
           type: type,
           sortType,
-          number: number.current
+          numberOfQueries: numberOfQueries.current
         }
       })
       if (respone.status == 200) {
         setData(respone.data)
         setpage(0)
         ref.current?.scrollToIndex({ animated: false, index: 0 })
-        number.current = 1
+        numberOfQueries.current = 1
       }
     } catch (error) {
       console.log(error)
@@ -120,7 +130,7 @@ const ActionHistory = ({ navigation }: any) => {
         params: {
           type: type,
           sortType,
-          number: number.current
+          numberOfQueries: numberOfQueries.current
         }
       })
       if (respone.status == 200) {
@@ -136,7 +146,7 @@ const ActionHistory = ({ navigation }: any) => {
   const handlePaging = async () => {
 
     if (data.length == 1 + page && data[data.length - 1].length == 12) {
-      number.current++
+      numberOfQueries.current++
       await getActionData()
       ref.current?.scrollToIndex({ animated: true, index: page + 1 })
       setpage(page + 1)
@@ -144,32 +154,96 @@ const ActionHistory = ({ navigation }: any) => {
       setpage(page + 1)
       ref.current?.scrollToIndex({ animated: true, index: page + 1 })
     }
+  }
+
+  async function handleSearchByCharacters() {
+    dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'keyword', keyword: text, field: selection === 'None' ? '' : selection } })
+    try {
+      const respone = await axios.get(handleSearchByCharactersApi, {
+        params: {
+          keyword: text,
+          numberOfQueries: 1,
+          field: selection === 'None' ? '' : selection
+        }
+      })
+      if (respone.status == 200) {
+        setData(respone.data)
+        setpage(0)
+        ref.current?.scrollToIndex({ animated: false, index: 0 })
+        numberOfQueries.current = 1
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function _handleSearchByCharacters() {
+    try {
+      const respone = await axios.get(handleSearchByCharactersApi, {
+        params: {
+          keyword: text,
+          numberOfQueries: numberOfQueries.current,
+          field: selection === 'None' ? '' : selection
+        }
+      })
+      if (respone.status == 200) {
+        setData([...data, ...respone.data])
+      }
+    } catch (error) {
+      console.log(error)
+    }
 
   }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#2653B0', padding: 10 }}>
 
-      <Text style={{ color: 'white', fontSize: 40, fontWeight: 'bold' }}>ACTION HISTORY</Text>
-      <View style={styles.searchBar}>
+      <View style={{ width, flexDirection: 'row', justifyContent: "space-around" }}>
+        <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>ACTION HISTORY</Text>
         <TouchableOpacity
           onPress={() => handleOpenInstruction()}
           style={{ height: 40, width: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 5, }}>
           <Ionicons name='help-circle' color={'#F3485B'} size={40} />
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.searchBar}>
+
+        <TextInput
+          value={text}
+          onChangeText={t => setText(t)}
+          placeholder='Search'
+          style={styles.txtIn} />
+
+        <Pressable
+          onPress={() => setIsShowPopup(pre => !pre)}
+          style={styles.popup}>
+          <Text style={styles.popupTxt}>{selection}</Text>
+          <FontAwesome name='chevron-down' size={16} color={'white'} />
+        </Pressable>
+
+        <TouchableOpacity
+          onPress={() => handleSearchByCharacters()}
+          style={{ height: 40, width: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 5, }}>
+          <Ionicons name='search' color={'white'} size={30} />
+        </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => setVisible(!visible)}
           style={{ height: 40, width: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 5, }}>
-          <Ionicons name='filter' color={'#F3485B'} size={40} />
+          <Ionicons name='filter' color={'white'} size={40} />
         </TouchableOpacity>
       </View>
 
       {
         openInstruction && <InstructionModal />
       }
+      {
+        isShowPopup && <Popup setSelection={setSelection} setIsShowPopup={setIsShowPopup} selectionData={selectionData} />
+      }
 
       <View style={{ flex: 1 }}>
-        <ActionHistoryBody ref={ref} data={data} viewOptions={viewOptions} />
+        {data.length > 0 && <ActionHistoryBody ref={ref} data={data} viewOptions={viewOptions} />}
       </View>
 
       <View style={{ position: 'absolute', flexDirection: 'row', bottom: 20, right: 20, gap: 10, alignItems: 'center' }}>
@@ -198,7 +272,7 @@ const ActionHistory = ({ navigation }: any) => {
       <Menu navigation={navigation} screen={'ActionHistory'} />
       {
         visible && <ModalComp handleSorting={handleSorting} setVisible={setVisible} setViewOptions={setViewOptions}
-          handleSortingChosenOne={handleSortingChosenOne} number={number} />
+          handleSortingChosenOne={handleSortingChosenOne} numberOfQueries={numberOfQueries} />
       }
     </View >
   )
@@ -207,6 +281,10 @@ const ActionHistory = ({ navigation }: any) => {
 export default ActionHistory
 
 const styles = StyleSheet.create({
+  popup: {
+    justifyContent: 'space-around', alignItems: 'center', height: 30, width: 100, borderRadius: 5, backgroundColor: '#FECB3E',
+    flexDirection: 'row'
+  },
   page: {
     width: width - 20, height: height * .7
   },
@@ -220,11 +298,12 @@ const styles = StyleSheet.create({
     height: height * .5, width: 250, backgroundColor: 'white', position: 'absolute', top: height * .17, right: 10,
     borderRadius: 20, paddingHorizontal: 10
   },
+  popupTxt: { color: '#F3485B', fontSize: 14, fontWeight: 'bold' },
   txtIn: {
-    backgroundColor: '#FECB3E', height: 40, width: 200, borderRadius: 5, paddingHorizontal: 10
+    backgroundColor: 'white', height: 40, width: 150, borderRadius: 10, paddingHorizontal: 10
   },
   searchBar: {
-    height: 50, width: '100%', backgroundColor: 'white', marginVertical: 15, paddingHorizontal: 20,
+    height: 50, width: '100%', marginVertical: 15,
     borderRadius: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'
   },
   title: {

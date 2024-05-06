@@ -11,7 +11,7 @@ const initialState = {
 }
 
 const filterReducer = (state = initialState, payload: any) => {
-    console.log(payload)
+    // console.log(payload)
     switch (payload.type) {
         case CHANGE_FILTER_STATE:
             return { ...state, isLoading: true, isFailed: false }

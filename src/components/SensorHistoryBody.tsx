@@ -14,9 +14,10 @@ const SensorHistoryBody = React.forwardRef(({ page, number, data, isLoading, set
             <FlashList
                 data={data}
                 keyExtractor={(item, index) => (index).toString()}
-                estimatedItemSize={height * 0.5}
+                estimatedItemSize={width}
                 ref={ref}
-                showsVerticalScrollIndicator={false}
+                horizontal
+                showsHorizontalScrollIndicator={false}
                 scrollEnabled={false}
                 renderItem={({ item, index }: any) => {
                     return (

@@ -15,9 +15,15 @@ const ActionHistoryBody = React.forwardRef(({ data, viewOptions, }: any, ref: an
             <FlashList
                 data={data}
                 keyExtractor={(item, index) => (index).toString()}
-                estimatedItemSize={height * 0.5}
+                estimatedItemSize={width}
                 ref={ref}
-                showsVerticalScrollIndicator={false}
+                horizontal
+                disableAutoLayout
+                overrideItemLayout={() => {
+                    width - 20
+                    height * .7
+                }}
+                showsHorizontalScrollIndicator={false}
                 scrollEnabled={false}
                 renderItem={({ item, index }: any) => {
                     return (
@@ -40,8 +46,8 @@ const ActionHistoryBody = React.forwardRef(({ data, viewOptions, }: any, ref: an
                                     return (
                                         <View style={styles.title}>
                                             <Text style={[styles.titleTxt, { flex: 1 }]}>{item.id}</Text>
-                                            {(viewOptions == 'All' || viewOptions == "Device") && <Text style={[styles.titleTxt, { flex: 1 }]}>{item.device == 1 ? 'Fan' : 'Light'}</Text>}
-                                            {(viewOptions == 'All' || viewOptions == "Mode") && <Text style={[styles.titleTxt, { flex: 1 }]}>{item.mode == 1 ? 'On' : 'Off'}</Text>}
+                                            {(viewOptions == 'All' || viewOptions == "Device") && <Text style={[styles.titleTxt, { flex: 1 }]}>{item.device}</Text>}
+                                            {(viewOptions == 'All' || viewOptions == "Mode") && <Text style={[styles.titleTxt, { flex: 1 }]}>{item.mode}</Text>}
                                             {(viewOptions == 'All' || viewOptions == "Date") && <Text style={[styles.titleTxt, { flex: 2 }]}>{item.datetime}</Text>}
                                         </View>
                                     )

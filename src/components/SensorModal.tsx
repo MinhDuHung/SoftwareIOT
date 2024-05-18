@@ -1,7 +1,10 @@
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { CHANGE_FILTER_STATE, CHANGE_SENSOR_FILTER_STATE } from '../redux/actionType/actions'
 const { width, height } = Dimensions.get("window")
-const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingChosenOne }: any) => {
+const SensorModal = ({ handleSorting, setVisible, setViewOptions, numberOfQueries }: any) => {
+    const dispatch = useDispatch()
     return (
         <View style={styles.modal}>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
@@ -9,7 +12,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
+                            numberOfQueries.current = 1
                             handleSorting('id', 'DESC')
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'id', sortType: 'DESC' } })
                             setVisible(false)
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
@@ -17,8 +22,11 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
+                            numberOfQueries.current = 1
                             handleSorting('id', "ASC")
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'id', sortType: 'ASC' } })
                             setVisible(false)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Asc</Text>
@@ -27,45 +35,82 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
             </View>
 
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                <Text style={styles.text}>DEVICE</Text>
+                <Text style={styles.text}>TEMPERATURE</Text>
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            handleSortingChosenOne('device', '1')
+                            numberOfQueries.current = 1
+                            handleSorting('temperature', 'DESC')
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'temperature', sortType: 'DESC' } })
                             setVisible(false)
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
-                        <Text style={styles.text1}>Fan</Text>
+                        <Text style={styles.text1}>Desc</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            handleSortingChosenOne('device', '0')
+                            numberOfQueries.current = 1
+                            handleSorting('temperature', "ASC")
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'temperature', sortType: 'ASC' } })
                             setVisible(false)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
-                        <Text style={styles.text1}>Light</Text>
+                        <Text style={styles.text1}>Asc</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                <Text style={styles.text}>MODE</Text>
+                <Text style={styles.text}>BRIGHTNESS</Text>
                 <View style={styles.btn}>
                     <TouchableOpacity
                         onPress={() => {
-                            handleSortingChosenOne('mode', '1')
+                            numberOfQueries.current = 1
+                            handleSorting('brightness', 'DESC')
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'brightness', sortType: 'DESC' } })
                             setVisible(false)
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
-                        <Text style={styles.text1}>On</Text>
+                        <Text style={styles.text1}>Desc</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            handleSortingChosenOne('mode', '0')
+                            numberOfQueries.current = 1
+                            handleSorting('brightness', "ASC")
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'brightness', sortType: 'ASC' } })
                             setVisible(false)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
-                        <Text style={styles.text1}>Off</Text>
+                        <Text style={styles.text1}>Asc</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+                <Text style={styles.text}>HUMIDITY</Text>
+                <View style={styles.btn}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            numberOfQueries.current = 1
+                            handleSorting('humidity', 'DESC')
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'humidity', sortType: 'DESC' } })
+                            setVisible(false)
+                        }}
+                        style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
+                        <Text style={styles.text1}>Desc</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            numberOfQueries.current = 1
+                            handleSorting('humidity', "ASC")
+                            dispatch({ type: CHANGE_SENSOR_FILTER_STATE, payload: { type: 'humidity', sortType: 'ASC' } })
+                            setVisible(false)
+
+                        }}
+                        style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
+                        <Text style={styles.text1}>Asc</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -75,16 +120,22 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <TouchableOpacity
                         onPress={() => {
+                            numberOfQueries.current = 1
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'DESC' } })
                             handleSorting('datetime', "DESC")
                             setVisible(false)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>Desc</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
+                            numberOfQueries.current = 1
+                            dispatch({ type: CHANGE_FILTER_STATE, payload: { type: 'datetime', sortType: 'ASC' } })
                             handleSorting('datetime', 'ASC')
                             setVisible(false)
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 40, width: 60, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Asc</Text>
@@ -99,6 +150,9 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("All")
+                            handleSorting('id', 'DESC')
+                            numberOfQueries.current = 1
+
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 60, borderRadius: 5, backgroundColor: '#FECB3E', }}>
                         <Text style={styles.text1}>All</Text>
@@ -106,23 +160,39 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
                     <TouchableOpacity
                         onPress={() => {
                             setVisible(false)
-                            setViewOptions("Device")
+                            setViewOptions("Temperature")
+                            handleSorting('id', 'DESC')
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
-                        <Text style={styles.text1}>Device only</Text>
+                        <Text style={styles.text1}>Temp only</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
                             setVisible(false)
-                            setViewOptions("Mode")
+                            setViewOptions("Brightness")
+                            handleSorting('id', 'DESC')
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
-                        <Text style={styles.text1}>Mode only</Text>
+                        <Text style={styles.text1}>Brig only</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setVisible(false)
+                            setViewOptions("Humidity")
+                            handleSorting('id', 'DESC')
+                            numberOfQueries.current = 1
+                        }}
+                        style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
+                        <Text style={styles.text1}>Humi only</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
                             setVisible(false)
                             setViewOptions("Date")
+                            handleSorting('id', 'DESC')
+                            numberOfQueries.current = 1
                         }}
                         style={{ justifyContent: 'space-around', alignItems: 'center', height: 30, width: 90, borderRadius: 5, backgroundColor: '#2653B0', }}>
                         <Text style={styles.text1}>Date only</Text>
@@ -133,14 +203,14 @@ const ModalComp = ({ handleSorting, setVisible, setViewOptions, handleSortingCho
     )
 }
 
-export default ModalComp
+export default SensorModal
 
 const styles = StyleSheet.create({
     btn: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' },
     text: { flex: 1, color: '#F3485B', fontSize: 15 },
     text1: { color: 'white', fontSize: 15 },
     modal: {
-        height: height * .5, width: 250, backgroundColor: 'white', position: 'absolute', top: height * .17, right: 10,
+        height: height * .65, width: 250, backgroundColor: 'white', position: 'absolute', top: height * .17, right: 10,
         borderRadius: 20, paddingHorizontal: 10
     },
     txtIn: {

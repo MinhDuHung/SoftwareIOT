@@ -1,36 +1,37 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import React, { memo, useEffect, useRef, useState } from 'react'
-import Sensor from '../components/Sensor'
-import WebView from 'react-native-webview'
-import { useDispatch } from 'react-redux'
-const { width, height } = Dimensions.get("window")
-const WebViewChart = ({ navigation }: any) => {
-  const dispatch = useDispatch()
-  const generateRandomData = (length: number) => {
-    return Array.from({ length }, () => Math.floor(Math.random() * 100));
-  };
-  const [temperatureData, setTemperatureData] = useState(generateRandomData(10));
-  const [brightnessData, setBrightnessData] = useState(generateRandomData(10));
-  const [humidityData, setHumidityData] = useState(generateRandomData(10));
-  const [temperature, setTemperature] = useState(99)
-  const [brightness, setBrightness] = useState(990)
-  const [humidity, setHumidity] = useState(83)
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React, {memo, useEffect, useRef, useState} from 'react';
+import Sensor from '../components/Sensor';
+import WebView from 'react-native-webview';
+import socketServcies from '../utils/socket/socketService';
+const {width, height} = Dimensions.get('window');
+const WebViewChart = ({navigation}: any) => {
+  const [temperatureData, setTemperatureData] = useState([0]);
+  const [brightnessData, setBrightnessData] = useState([0]);
+  const [humidityData, setHumidityData] = useState([0]);
+  const [temperature, setTemperature] = useState(0);
+  const [brightness, setBrightness] = useState(0);
+  const [humidity, setHumidity] = useState(0);
   const chartRef = useRef<WebView>(null);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTemperatureData((pre: any) => [...pre.slice(1), Math.floor(Math.random() * 100)]);
-      setBrightnessData((pre: any) => [...pre.slice(1), Math.floor(Math.random() * 1000)]);
-      setHumidityData((pre: any) => [...pre.slice(1), Math.floor(Math.random() * 100)]);
-    }, 2000);
-    return () => clearInterval(intervalId);
+    socketServcies.initializeSocket();
+    socketServcies.on('send_sensor_data', (data: any) => {
+      const {brightness, temperature, humidity} = data;
+      setBrightnessData(pre => [...pre, brightness]);
+      setHumidityData(pre => [...pre, humidity]);
+      setTemperatureData(pre => [...pre, temperature]);
+    });
   }, []);
 
   useEffect(() => {
     setHumidity(humidityData[humidityData.length - 1]);
     setTemperature(temperatureData[temperatureData.length - 1]);
     setBrightness(brightnessData[brightnessData.length - 1]);
-    // dispatch({ type: CHANGE_IS_WARNING, isWarning: temperatureData[temperatureData.length - 1] > 60 ? true : false })
+    if (humidityData.length >= 11) {
+      setHumidityData(prevData => prevData.slice(1));
+      setBrightnessData(prevData => prevData.slice(1));
+      setTemperatureData(prevData => prevData.slice(1));
+    }
   }, [temperatureData, brightnessData, humidityData]);
 
   const chartData = {
@@ -108,7 +109,7 @@ const WebViewChart = ({ navigation }: any) => {
                 A: {
                   type: 'linear',
                   position: 'left',
-                  ticks: { beginAtZero: true, color:  '#F3485B' },
+                  ticks: { beginAtZero: true, color:  '#Ffff' },
                   grid: { display: false, },
                   max:100
                 },
@@ -133,51 +134,71 @@ const WebViewChart = ({ navigation }: any) => {
   `;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <View style={styles.header}>
+        {/* <Sensor value={temperature} title={'Tempurature'} /> */}
         <Sensor value={temperature} title={'Tempurature'} />
         <Sensor value={brightness} title={'Brightness'} />
         <Sensor value={humidity} title={'Humidity'} />
       </View>
       <View style={styles.body}>
-        <View style={{ flexDirection: 'row', marginTop: 10, height: 40, width, justifyContent: 'space-around' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            marginTop: 10,
+            height: 40,
+            width,
+            justifyContent: 'space-around',
+          }}>
           <View style={styles.legends}>
-            <View style={{ height: 15, width: 15, backgroundColor: '#F3485B' }} />
+            <View style={{height: 15, width: 15, backgroundColor: '#F3485B'}} />
             <Text style={styles.txt}>Temperature</Text>
           </View>
           <View style={styles.legends}>
-            <View style={{ height: 15, width: 15, backgroundColor: '#FECB3E' }} />
+            <View style={{height: 15, width: 15, backgroundColor: '#FECB3E'}} />
             <Text style={styles.txt}>Brightness</Text>
           </View>
           <View style={styles.legends}>
-            <View style={{ height: 15, width: 15, backgroundColor: '#2653B0' }} />
+            <View style={{height: 15, width: 15, backgroundColor: '#2653B0'}} />
             <Text style={styles.txt}>Humidity</Text>
           </View>
         </View>
-        <View style={{ height: height * .5, }}>
-          <WebView source={{ html: chartHtml }} ref={chartRef} />
+        <View style={{height: height * 0.5}}>
+          <WebView source={{html: chartHtml}} ref={chartRef} />
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default memo(WebViewChart)
+export default memo(WebViewChart);
 
 const styles = StyleSheet.create({
   legends: {
-    height: 30, paddingHorizontal: 10, gap: 10, justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'
+    height: 30,
+    paddingHorizontal: 10,
+    gap: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   txt: {
-    color: 'white'
+    color: 'white',
   },
   header: {
-    flex: 2, justifyContent: 'space-around', alignItems: 'center', flexDirection: 'row'
+    flex: 2,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   body: {
-    flex: 8
+    flex: 8,
   },
   line: {
-    height: height * .5 - 80, width: 40, marginLeft: 10, justifyContent: 'space-between', marginTop: 10
-  }
-})
+    height: height * 0.5 - 80,
+    width: 40,
+    marginLeft: 10,
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+});

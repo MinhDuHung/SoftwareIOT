@@ -2,24 +2,29 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {memo, useEffect, useRef, useState} from 'react';
 import Sensor from '../components/Sensor';
 import WebView from 'react-native-webview';
-import socketServcies from '../utils/socket/socketService';
+import socket from '../utils/socket/socketService';
 const {width, height} = Dimensions.get('window');
 const WebViewChart = ({navigation}: any) => {
   const [temperatureData, setTemperatureData] = useState([0]);
   const [brightnessData, setBrightnessData] = useState([0]);
   const [humidityData, setHumidityData] = useState([0]);
+  const [extraData, setExtraData] = useState([0]);
   const [temperature, setTemperature] = useState(0);
   const [brightness, setBrightness] = useState(0);
   const [humidity, setHumidity] = useState(0);
+  const [extra, setExtra] = useState(0);
   const chartRef = useRef<WebView>(null);
 
   useEffect(() => {
-    socketServcies.initializeSocket();
-    socketServcies.on('send_sensor_data', (data: any) => {
-      const {brightness, temperature, humidity} = data;
-      setBrightnessData(pre => [...pre, brightness]);
-      setHumidityData(pre => [...pre, humidity]);
-      setTemperatureData(pre => [...pre, temperature]);
+    socket.initializeSocket();
+    socket.on('send_sensor_data', (data: any) => {
+      if (data) {
+        const {brightness, temperature, humidity, extra} = data;
+        setBrightnessData(pre => [...pre, brightness]);
+        setHumidityData(pre => [...pre, humidity]);
+        setTemperatureData(pre => [...pre, temperature]);
+        setExtraData(pre => [...pre, extra]);
+      }
     });
   }, []);
 
@@ -27,12 +32,14 @@ const WebViewChart = ({navigation}: any) => {
     setHumidity(humidityData[humidityData.length - 1]);
     setTemperature(temperatureData[temperatureData.length - 1]);
     setBrightness(brightnessData[brightnessData.length - 1]);
+    setExtra(extraData[extraData.length - 1]);
     if (humidityData.length >= 11) {
       setHumidityData(prevData => prevData.slice(1));
       setBrightnessData(prevData => prevData.slice(1));
       setTemperatureData(prevData => prevData.slice(1));
+      setExtraData(prevData => prevData.slice(1));
     }
-  }, [temperatureData, brightnessData, humidityData]);
+  }, [temperatureData, brightnessData, humidityData, extraData]);
 
   const chartData = {
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
@@ -51,6 +58,7 @@ const WebViewChart = ({navigation}: any) => {
         const data1 = ${JSON.stringify(temperatureData)};
         const data2 = ${JSON.stringify(humidityData)};
         const data3 = ${JSON.stringify(brightnessData)};
+        const data4 = ${JSON.stringify(extraData)};
         Chart.defaults.font.size = 30
         const plugin = {
             id: 'customCanvasBackgroundColor',
@@ -90,6 +98,14 @@ const WebViewChart = ({navigation}: any) => {
                 data: data3,
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: '#FECB3E',
+                borderWidth: 4,
+              },
+              {
+                yAxisID: 'A',
+                label: 'Extra',
+                data: data4,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'pink',
                 borderWidth: 4,
               },
             ],
@@ -136,10 +152,10 @@ const WebViewChart = ({navigation}: any) => {
   return (
     <View style={{flex: 1}}>
       <View style={styles.header}>
-        {/* <Sensor value={temperature} title={'Tempurature'} /> */}
-        <Sensor value={temperature} title={'Tempurature'} />
+        <Sensor value={temperature} title={'Temperature'} />
         <Sensor value={brightness} title={'Brightness'} />
         <Sensor value={humidity} title={'Humidity'} />
+        <Sensor value={extra} title={'Extra'} />
       </View>
       <View style={styles.body}>
         <View
@@ -161,6 +177,10 @@ const WebViewChart = ({navigation}: any) => {
           <View style={styles.legends}>
             <View style={{height: 15, width: 15, backgroundColor: '#2653B0'}} />
             <Text style={styles.txt}>Humidity</Text>
+          </View>
+          <View style={styles.legends}>
+            <View style={{height: 15, width: 15, backgroundColor: 'pink'}} />
+            <Text style={styles.txt}>Extra</Text>
           </View>
         </View>
         <View style={{height: height * 0.5}}>

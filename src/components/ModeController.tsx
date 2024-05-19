@@ -5,27 +5,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, {memo, useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Animated, {
-  Extrapolation,
   Easing,
-  interpolate,
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
-  withSpring,
   withTiming,
-  interpolateColor,
-  withSequence,
   cancelAnimation,
 } from 'react-native-reanimated';
 import axios from 'axios';
@@ -35,8 +23,7 @@ import convertToVietnamTime from '../utils/functions/convertDateFormat';
 const {width, height} = Dimensions.get('window');
 const ModeController = ({title}: any) => {
   const rotation = useSharedValue(0);
-  const [lightMode, setLightMode] = useState(false);
-  const [fanMode, setFanMode] = useState(false);
+  const [mode, setMode] = useState(false);
   const handleMode = async (device: string, mode: string) => {
     const datetime = convertToVietnamTime(new Date());
     try {
@@ -70,76 +57,44 @@ const ModeController = ({title}: any) => {
     );
   };
 
-  if (title == 'Fan') {
-    return (
-      <View style={[styles.box]}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <TouchableOpacity
-            onPress={() => {
-              if (!fanMode) {
-                setFanMode(true);
-                operateFan();
-                handleMode('fan', 'On');
-              }
-            }}
-            style={[
-              styles.btn,
-              {
-                backgroundColor: fanMode
-                  ? 'rgba(0, 235, 90, 1)'
-                  : 'rgba(7, 127, 59, 0.5)',
-              },
-            ]}>
-            <Text
-              style={[
-                styles.value,
-                {color: fanMode ? 'white' : 'rgba(188, 164, 165, 1)'},
-              ]}>
-              On
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (fanMode) {
-                setFanMode(false);
-                cancelAnimation(rotation);
-                handleMode('fan', 'Off');
-              }
-            }}
-            style={[
-              styles.btn,
-              {backgroundColor: !fanMode ? 'red' : 'rgba(153, 79, 84, 0.92)'},
-            ]}>
-            <Text
-              style={[
-                styles.value,
-                {color: !fanMode ? 'white' : 'rgba(188, 164, 165, 1)'},
-              ]}>
-              Off
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Animated.View style={rotateAnim}>
-          <MaterialCommunityIcons name="fan" size={70} color={'#03FDF9'} />
-        </Animated.View>
-      </View>
-    );
-  }
-
+  const icons: any = {
+    Fan: (
+      <Animated.View style={rotateAnim}>
+        <MaterialCommunityIcons name="fan" size={50} color={'#03FDF9'} />
+      </Animated.View>
+    ),
+    Light: (
+      <MaterialCommunityIcons
+        name="lightbulb-on-outline"
+        size={50}
+        color={mode ? '#FECB3E' : 'gray'}
+      />
+    ),
+    Extra: <Entypo name="air" size={50} color={mode ? '#2653B0' : 'gray'} />,
+  };
   return (
-    <View style={[styles.box]}>
+    <View style={styles.box}>
       <View style={{flexDirection: 'row', gap: 10}}>
         <TouchableOpacity
           onPress={() => {
-            if (!lightMode) {
-              setLightMode(true);
+            if (title == 'Fan') {
+              if (!mode) {
+                setMode(true);
+                operateFan();
+                handleMode('fan', 'On');
+              }
+            } else if (title == 'Light') {
               handleMode('light', 'On');
+              setMode(true);
+            } else {
+              handleMode('extra', 'On');
+              setMode(true);
             }
           }}
           style={[
             styles.btn,
             {
-              backgroundColor: lightMode
+              backgroundColor: mode
                 ? 'rgba(0, 235, 90, 1)'
                 : 'rgba(7, 127, 59, 0.5)',
             },
@@ -147,36 +102,41 @@ const ModeController = ({title}: any) => {
           <Text
             style={[
               styles.value,
-              {color: lightMode ? 'white' : 'rgba(188, 164, 165, 1)'},
+              {color: mode ? 'white' : 'rgba(188, 164, 165, 1)'},
             ]}>
             On
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            if (lightMode) {
-              setLightMode(false);
+            if (title == 'Fan') {
+              if (mode) {
+                setMode(false);
+                cancelAnimation(rotation);
+                handleMode('fan', 'Off');
+              }
+            } else if (title == 'Light') {
               handleMode('light', 'Off');
+              setMode(false);
+            } else {
+              handleMode('extra', 'Off');
+              setMode(false);
             }
           }}
           style={[
             styles.btn,
-            {backgroundColor: !lightMode ? 'red' : 'rgba(153, 79, 84, 0.92)'},
+            {backgroundColor: !mode ? 'red' : 'rgba(153, 79, 84, 0.92)'},
           ]}>
           <Text
             style={[
               styles.value,
-              {color: !lightMode ? 'white' : 'rgba(188, 164, 165, 1)'},
+              {color: !mode ? 'white' : 'rgba(188, 164, 165, 1)'},
             ]}>
             Off
           </Text>
         </TouchableOpacity>
       </View>
-      <MaterialCommunityIcons
-        name="lightbulb-on"
-        size={70}
-        color={lightMode ? 'yellow' : 'gray'}
-      />
+      {icons[title]}
     </View>
   );
 };
@@ -192,12 +152,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   box: {
-    width: width / 2 - 20,
+    width: width / 3 - 10,
     height: 140,
     borderRadius: 15,
     backgroundColor: '#001030',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 10,
   },
   txt: {
     fontSize: 16,

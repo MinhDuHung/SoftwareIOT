@@ -2,20 +2,22 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {memo} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import Entypo from 'react-native-vector-icons/Entypo';
 
-const {width, height} = Dimensions.get('window');
 const Sensor = ({value, title}: any) => {
   const backgroundColor =
-    title == 'Tempurature'
+    title == 'Temperature'
       ? '#F3485B'
       : title == 'Brightness'
       ? '#FECB3E'
-      : '#2653B0';
+      : title == 'Humidity'
+      ? '#2653B0'
+      : 'pink';
   return (
-    <View style={[styles.box, {}]}>
+    <View style={styles.box}>
       <AnimatedCircularProgress
-        size={120}
-        width={20}
+        size={95}
+        width={15}
         fill={title == 'Brightness' ? value / 10 : value}
         tintColor={backgroundColor}
         backgroundColor="#3d5875">
@@ -28,20 +30,22 @@ const Sensor = ({value, title}: any) => {
                 <MaterialCommunityIcons
                   name="temperature-celsius"
                   color={'white'}
-                  size={20}
+                  size={15}
                 />
               ) : title == 'Humidity' ? (
                 <MaterialCommunityIcons
                   name="water-percent"
                   color={'white'}
-                  size={30}
+                  size={20}
                 />
-              ) : (
+              ) : title == 'Brightness' ? (
                 <MaterialCommunityIcons
                   name="brightness-7"
                   color={'white'}
-                  size={20}
+                  size={15}
                 />
+              ) : (
+                <Entypo name="air" size={15} color={'white'} />
               )}
             </View>
           </View>
@@ -56,18 +60,18 @@ export default memo(Sensor);
 const styles = StyleSheet.create({
   box: {
     flex: 1,
-    height: 120,
+    height: 100,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
   },
   txt: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'white',
   },
   value: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'white',
     fontWeight: 'bold',
   },

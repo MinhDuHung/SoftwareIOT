@@ -3,6 +3,7 @@ import React, {memo, useEffect, useRef, useState} from 'react';
 import Sensor from '../components/Sensor';
 import WebView from 'react-native-webview';
 import socket from '../utils/socket/socketService';
+import Warning from './Warning';
 const {width, height} = Dimensions.get('window');
 const WebViewChart = ({navigation}: any) => {
   const [temperatureData, setTemperatureData] = useState([0]);
@@ -14,12 +15,18 @@ const WebViewChart = ({navigation}: any) => {
   const [humidity, setHumidity] = useState(0);
   const [extra, setExtra] = useState(0);
   const chartRef = useRef<WebView>(null);
+  const [isWarning, setIsWarning] = useState(false);
 
   useEffect(() => {
     socket.initializeSocket();
     socket.on('send_sensor_data', (data: any) => {
       if (data) {
         const {brightness, temperature, humidity, extra} = data;
+        if (temperature >= 34) {
+          setIsWarning(true);
+        } else {
+          setIsWarning(false);
+        }
         setBrightnessData(pre => [...pre, brightness]);
         setHumidityData(pre => [...pre, humidity]);
         setTemperatureData(pre => [...pre, temperature]);
@@ -151,6 +158,7 @@ const WebViewChart = ({navigation}: any) => {
 
   return (
     <View style={{flex: 1}}>
+      {isWarning && <Warning />}
       <View style={styles.header}>
         <Sensor value={temperature} title={'Temperature'} />
         <Sensor value={brightness} title={'Brightness'} />

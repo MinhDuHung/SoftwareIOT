@@ -51,7 +51,7 @@ const SensorHistory = ({navigation}: any) => {
     'Temperature',
     'Humidity',
     'Brightness',
-    'Extra',
+    'Windspeed',
     'Datetime',
   ];
 

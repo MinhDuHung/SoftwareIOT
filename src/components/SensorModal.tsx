@@ -285,16 +285,16 @@ const SensorModal = ({
           justifyContent: 'space-around',
           alignItems: 'center',
         }}>
-        <Text style={styles.text}>EXTRA</Text>
+        <Text style={styles.text}>WINDSPEED</Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
             onPress={() => {
               numberOfQueries.current = 1;
               dispatch({
                 type: CHANGE_SENSOR_FILTER_STATE,
-                payload: {type: 'extra', sortType: 'DESC'},
+                payload: {type: 'windspeed', sortType: 'DESC'},
               });
-              handleSorting('extra', 'DESC');
+              handleSorting('windspeed', 'DESC');
               setVisible(false);
             }}
             style={{
@@ -417,7 +417,7 @@ const SensorModal = ({
           <TouchableOpacity
             onPress={() => {
               setVisible(false);
-              setViewOptions('Extra');
+              setViewOptions('windspeed');
               handleSorting('id', 'DESC');
               numberOfQueries.current = 1;
             }}
@@ -429,7 +429,7 @@ const SensorModal = ({
               borderRadius: 5,
               backgroundColor: '#2653B0',
             }}>
-            <Text style={styles.text1}>Extra only</Text>
+            <Text style={styles.text1}>Wind only</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {

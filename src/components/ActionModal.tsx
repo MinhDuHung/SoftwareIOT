@@ -92,7 +92,7 @@ const ModalComp = ({
               justifyContent: 'space-around',
               alignItems: 'center',
               height: 40,
-              width: 45,
+              width: 60,
               borderRadius: 5,
               backgroundColor: '#FECB3E',
             }}>
@@ -112,19 +112,19 @@ const ModalComp = ({
               justifyContent: 'space-around',
               alignItems: 'center',
               height: 40,
-              width: 45,
+              width: 60,
               borderRadius: 5,
               backgroundColor: '#2653B0',
             }}>
             <Text style={styles.text1}>Light</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               numberOfQueries.current = 1;
-              handleSortingChosenOne('device', 'extra');
+              handleSortingChosenOne('device', 'windspeed');
               dispatch({
                 type: CHANGE_FILTER_STATE,
-                payload: {type: 'device', action: 'extra'},
+                payload: {type: 'device', action: 'windspeed'},
               });
               setVisible(false);
             }}
@@ -136,8 +136,8 @@ const ModalComp = ({
               borderRadius: 5,
               backgroundColor: '#FECB3E',
             }}>
-            <Text style={styles.text1}>Extra</Text>
-          </TouchableOpacity>
+            <Text style={styles.text1}>WIND</Text>
+          </TouchableOpacity> */}
         </View>
       </View>
 

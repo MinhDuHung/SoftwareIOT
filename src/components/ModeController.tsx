@@ -60,13 +60,13 @@ const ModeController = ({title}: any) => {
   const icons: any = {
     Fan: (
       <Animated.View style={rotateAnim}>
-        <MaterialCommunityIcons name="fan" size={50} color={'#03FDF9'} />
+        <MaterialCommunityIcons name="fan" size={70} color={'#03FDF9'} />
       </Animated.View>
     ),
     Light: (
       <MaterialCommunityIcons
         name="lightbulb-on-outline"
-        size={50}
+        size={70}
         color={mode ? '#FECB3E' : 'gray'}
       />
     ),
@@ -87,7 +87,7 @@ const ModeController = ({title}: any) => {
               handleMode('light', 'On');
               setMode(true);
             } else {
-              handleMode('extra', 'On');
+              handleMode('windspeed', 'On');
               setMode(true);
             }
           }}
@@ -119,7 +119,7 @@ const ModeController = ({title}: any) => {
               handleMode('light', 'Off');
               setMode(false);
             } else {
-              handleMode('extra', 'Off');
+              handleMode('windspeed', 'Off');
               setMode(false);
             }
           }}
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   box: {
-    width: width / 3 - 10,
+    width: width / 2 - 10,
     height: 140,
     borderRadius: 15,
     backgroundColor: '#001030',

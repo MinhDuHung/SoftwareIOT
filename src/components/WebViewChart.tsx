@@ -4,7 +4,9 @@ import Sensor from '../components/Sensor';
 import WebView from 'react-native-webview';
 import socket from '../utils/socket/socketService';
 import Warning from './Warning';
+
 const {width, height} = Dimensions.get('window');
+
 const WebViewChart = ({navigation}: any) => {
   const [temperatureData, setTemperatureData] = useState([0]);
   const [brightnessData, setBrightnessData] = useState([0]);
@@ -21,16 +23,16 @@ const WebViewChart = ({navigation}: any) => {
     socket.initializeSocket();
     socket.on('send_sensor_data', (data: any) => {
       if (data) {
-        const {brightness, temperature, humidity, extra} = data;
+        const {brightness, temperature, humidity, windspeed} = data;
         if (temperature >= 34) {
           setIsWarning(true);
         } else {
           setIsWarning(false);
         }
-        setBrightnessData(pre => [...pre, brightness]);
-        setHumidityData(pre => [...pre, humidity]);
-        setTemperatureData(pre => [...pre, temperature]);
-        setExtraData(pre => [...pre, extra]);
+        setBrightnessData(prevData => [...prevData, brightness]);
+        setHumidityData(prevData => [...prevData, humidity]);
+        setTemperatureData(prevData => [...prevData, temperature]);
+        setExtraData(prevData => [...prevData, windspeed]);
       }
     });
   }, []);
@@ -53,108 +55,176 @@ const WebViewChart = ({navigation}: any) => {
   };
 
   const chartHtml = `
-    <html>
-    <head>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </head>
-    <body>
-    <canvas id="myChart" width="${width}" height="${height * 0.5}" ></canvas>
-      <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const data = ${JSON.stringify(chartData)};
-        const data1 = ${JSON.stringify(temperatureData)};
-        const data2 = ${JSON.stringify(humidityData)};
-        const data3 = ${JSON.stringify(brightnessData)};
-        const data4 = ${JSON.stringify(extraData)};
-        Chart.defaults.font.size = 30
-        const plugin = {
-            id: 'customCanvasBackgroundColor',
-            beforeDraw: (chart, args, options) => {
-              const {ctx} = chart;
-              ctx.save();
-              ctx.globalCompositeOperation = 'destination-over';
-              ctx.fillStyle = options.color || '#99ffff';
-              ctx.fillRect(0, 0, chart.width, chart.height);
-              ctx.restore();
-            }
-          };
-        const myChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: data.labels,
-            datasets: [
-              {
-                yAxisID: 'A',
-                label: 'Temperature',
-                data: data1,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: '#F3485B',
-                borderWidth: 4,
-              },
-              {
-                yAxisID: 'A',
-                label: 'Humidity',
-                data: data2,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: '#2653B0',
-                borderWidth: 4,
-              },
-              {
-                yAxisID: 'B',
-                label: 'Humidity',
-                data: data3,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: '#FECB3E',
-                borderWidth: 4,
-              },
-              {
-                yAxisID: 'A',
-                label: 'Extra',
-                data: data4,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'pink',
-                borderWidth: 4,
-              },
-            ],
+<html>
+<head>
+  <style>
+  body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #012548;
+  }
+    .chart-container {
+      display: flex;
+      width: 50%;
+      height: 100%;
+    }
+    .chart {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="chart-container">
+    <canvas id="chart1" class="chart"></canvas>
+    <canvas id="chart2" class="chart"></canvas>
+  </div>
+  <script>
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+
+    const data = ${JSON.stringify(chartData)};
+    const data1 = ${JSON.stringify(temperatureData)};
+    const data2 = ${JSON.stringify(humidityData)};
+    const data3 = ${JSON.stringify(brightnessData)};
+    const data4 = ${JSON.stringify(extraData)};
+
+    Chart.defaults.font.size = 20;
+    const plugin = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+          const {ctx} = chart;
+          ctx.save();
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.fillStyle = options.color || '#99ffff';
+          ctx.fillRect(0, 0, chart.width, chart.height);
+          ctx.restore();
+        }
+      };
+
+    const myChart1 = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            yAxisID: 'A',
+            label: 'Temperature',
+            data: data1,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: '#F3485B',
+            borderWidth: 4,
           },
-         plugins: [plugin],
-          options: {
-            animation:false,
-            tension:.5,
-            responsive: true,
-            plugins: {
-                legend: false,
-                customCanvasBackgroundColor: {
-                    color: '#012548',
-                }
+          {
+            yAxisID: 'A',
+            label: 'Humidity',
+            data: data2,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: '#2653B0',
+            borderWidth: 4,
+          },
+          {
+            yAxisID: 'B',
+            label: 'Brightness',
+            data: data3,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: '#FECB3E',
+            borderWidth: 4,
+          },
+        ],
+      },
+      plugins: [plugin],
+      options: {
+        animation: false,
+        tension: .5,
+        responsive: true,
+        plugins: {
+          legend: false,
+          customCanvasBackgroundColor: {
+            color: '#012548',
+          }
+        },
+        scales: {
+          A: {
+            type: 'linear',
+            position: 'left',
+            ticks: { beginAtZero: true, color:  '#Ffff' },
+            grid: { display: false, },
+            max:100,
+            min:0
+          },
+          B: {
+            type: 'linear',
+            position: 'right',
+            ticks: { color: '#FECB3E' },
+            beginAtZero: true, 
+            max:1000,
+            grid: { display: true , color:'white'}
+          },
+          x: {
+            grid: { display: true , color:'white'}
+          }
+        },
+      },
+    });
+
+    const myChart2 = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [
+          {
+            yAxisID: 'B',
+            label: 'Extra',
+            data: data4,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'pink',
+            borderWidth: 4,
+          },
+        ],
+      },
+      plugins: [plugin],
+      options: {
+        animation: false,
+        tension: .5,
+        responsive: true,
+        plugins: {
+          legend: false,
+          customCanvasBackgroundColor: {
+            color: '#012548',
+          }
+        },
+        scales: {
+          B: {
+            type: 'linear',
+            position: 'left',
+            ticks: { beginAtZero: true, color:  '#Ffff', display: true }, // Ẩn nhãn trục y
+            grid: { 
+              display: true,
+              color: 'white',
+              lineWidth: 1, // Độ rộng của dòng grid
+              drawBorder: false, // Không vẽ viền
             },
-            scales: {
-                A: {
-                  type: 'linear',
-                  position: 'left',
-                  ticks: { beginAtZero: true, color:  '#Ffff' },
-                  grid: { display: false, },
-                  max:100
-                },
-                B: {
-                  type: 'linear',
-                  position: 'right',
-                  ticks: { color: '#FECB3E' },
-                  beginAtZero: true, 
-                  max:1000,
-                  grid: { display: true , color:'white'}
-                },
-                x:{
-                    grid: { display: true , color:'white'}
-                }
-                },
-            },
-        });
-      </script>
-    </body>
-    </html>
-    
-  `;
+            max:100
+          },
+          x: {
+            grid: { 
+              display: true,
+              color: 'white',
+              lineWidth: 1, // Độ rộng của dòng grid
+              drawBorder: false, // Không vẽ viền
+            }
+          }
+        },
+      },
+    });
+  </script>
+</body>
+</html>
+`;
 
   return (
     <View style={{flex: 1}}>
@@ -163,37 +233,10 @@ const WebViewChart = ({navigation}: any) => {
         <Sensor value={temperature} title={'Temperature'} />
         <Sensor value={brightness} title={'Brightness'} />
         <Sensor value={humidity} title={'Humidity'} />
-        <Sensor value={extra} title={'Extra'} />
+        <Sensor value={extra} title={'windspeed'} />
       </View>
       <View style={styles.body}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 10,
-            height: 40,
-            width,
-            justifyContent: 'space-around',
-          }}>
-          <View style={styles.legends}>
-            <View style={{height: 15, width: 15, backgroundColor: '#F3485B'}} />
-            <Text style={styles.txt}>Temperature</Text>
-          </View>
-          <View style={styles.legends}>
-            <View style={{height: 15, width: 15, backgroundColor: '#FECB3E'}} />
-            <Text style={styles.txt}>Brightness</Text>
-          </View>
-          <View style={styles.legends}>
-            <View style={{height: 15, width: 15, backgroundColor: '#2653B0'}} />
-            <Text style={styles.txt}>Humidity</Text>
-          </View>
-          <View style={styles.legends}>
-            <View style={{height: 15, width: 15, backgroundColor: 'pink'}} />
-            <Text style={styles.txt}>Extra</Text>
-          </View>
-        </View>
-        <View style={{height: height * 0.5}}>
-          <WebView source={{html: chartHtml}} ref={chartRef} />
-        </View>
+        <WebView source={{html: chartHtml}} ref={chartRef} />
       </View>
     </View>
   );
@@ -202,17 +245,6 @@ const WebViewChart = ({navigation}: any) => {
 export default memo(WebViewChart);
 
 const styles = StyleSheet.create({
-  legends: {
-    height: 30,
-    paddingHorizontal: 10,
-    gap: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  txt: {
-    color: 'white',
-  },
   header: {
     flex: 2,
     justifyContent: 'space-around',
@@ -221,12 +253,5 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 8,
-  },
-  line: {
-    height: height * 0.5 - 80,
-    width: 40,
-    marginLeft: 10,
-    justifyContent: 'space-between',
-    marginTop: 10,
   },
 });

@@ -48,8 +48,9 @@ const SensorHistoryBody = React.forwardRef(
                           viewOptions == 'Brightness') && (
                           <Text style={[styles.titleTxt, {flex: 1}]}>BRIG</Text>
                         )}
-                        {(viewOptions == 'All' || viewOptions == 'Extra') && (
-                          <Text style={[styles.titleTxt, {flex: 1}]}>EXT</Text>
+                        {(viewOptions == 'All' ||
+                          viewOptions == 'windspeed') && (
+                          <Text style={[styles.titleTxt, {flex: 1}]}>WIN</Text>
                         )}
                         {(viewOptions == 'All' ||
                           viewOptions == 'Humidity') && (
@@ -81,9 +82,10 @@ const SensorHistoryBody = React.forwardRef(
                             {item.brightness}
                           </Text>
                         )}
-                        {(viewOptions == 'All' || viewOptions == 'Extra') && (
+                        {(viewOptions == 'All' ||
+                          viewOptions == 'windspeed') && (
                           <Text style={[styles.titleTxt, {flex: 1}]}>
-                            {item.extra}
+                            {item.windspeed}
                           </Text>
                         )}
                         {(viewOptions == 'All' ||

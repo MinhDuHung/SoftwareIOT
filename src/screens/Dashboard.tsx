@@ -15,7 +15,7 @@ const Dashboard = ({navigation}: any) => {
       <View style={styles.footer}>
         <ModeController title={'Fan'} />
         <ModeController title={'Light'} />
-        <ModeController title={'Extra'} />
+        {/* <ModeController title={'Extra'} /> */}
       </View>
 
       <Menu navigation={navigation} screen={'Dashboard'} />
